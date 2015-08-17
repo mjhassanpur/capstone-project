@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mjhassanpur.gittrend.R;
+import com.github.mjhassanpur.gittrend.sync.SyncAdapter;
 import com.github.mjhassanpur.gittrend.ui.misc.RecyclerItemClickListener;
 
 import java.util.Arrays;
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.recycler_view);
         setupRecyclerView(rv);
+
+        SyncAdapter.initializeSyncAdapter(this);
     }
 
     @Override

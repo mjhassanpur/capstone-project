@@ -7,5 +7,5 @@ import java.util.List;
 public class Repositories {
 
     @SerializedName("items")
-    public List<Repository> mRepositories;
+    public List<Repository> repositories;
 }

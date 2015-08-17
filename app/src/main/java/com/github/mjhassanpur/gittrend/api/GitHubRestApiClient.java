@@ -5,6 +5,9 @@ import retrofit.http.GET;
 import retrofit.http.Query;
 import rx.Observable;
 
+/**
+ * @see <a href="http://square.github.io/retrofit/"></a>
+ */
 public class GitHubRestApiClient {
 
     private static final String WEB_SERVICE_BASE_URL = "https://api.github.com";
