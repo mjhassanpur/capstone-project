@@ -1,7 +1,10 @@
 package com.github.mjhassanpur.gittrend.api;
 
+import java.util.List;
+
 import retrofit.RestAdapter;
 import retrofit.http.GET;
+import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
 
@@ -29,13 +32,27 @@ public class GitHubRestApiClient {
         return mInstance;
     }
 
-    private interface GitHubWebService {
+    public GitHubWebService getWebService() {
+        return mWebService;
+    }
+
+    public interface GitHubWebService {
 
         @GET("/search/repositories")
         Observable<Repositories> repositories(
                 @Query("q") String search,
                 @Query("sort") String sort,
-                @Query("order") String order
+                @Query("order") String order,
+                @Query("client_id") String id,
+                @Query("client_secret") String secret
+        );
+
+        @GET("/repos/{owner}/{repo}/stats/contributors")
+        Observable<List<Contributor>> contributors(
+                @Path("owner") String owner,
+                @Path("repo") String repo,
+                @Query("client_id") String id,
+                @Query("client_secret") String secret
         );
     }
 }
