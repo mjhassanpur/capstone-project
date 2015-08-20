@@ -9,19 +9,41 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.mjhassanpur.gittrend.Config;
 import com.github.mjhassanpur.gittrend.R;
+import com.github.mjhassanpur.gittrend.api.Contributor;
+import com.github.mjhassanpur.gittrend.api.FullRepository;
+import com.github.mjhassanpur.gittrend.api.GitHubRestApiClient;
+import com.github.mjhassanpur.gittrend.api.Repositories;
+import com.github.mjhassanpur.gittrend.api.Repository;
 import com.github.mjhassanpur.gittrend.sync.SyncAdapter;
 import com.github.mjhassanpur.gittrend.ui.misc.RecyclerItemClickListener;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.functions.Func2;
+import rx.schedulers.Schedulers;
+
 public class MainActivity extends AppCompatActivity {
+
+    public final String LOG_TAG = MainActivity.class.getSimpleName();
+
+    private List<FullRepository> mFullRepositories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +64,59 @@ public class MainActivity extends AppCompatActivity {
         setupRecyclerView(rv);
 
         SyncAdapter.initializeSyncAdapter(this);
+
+        mFullRepositories = new ArrayList<>();
+        final GitHubRestApiClient api = GitHubRestApiClient.getInstance();
+
+        api.getWebService()
+                .repositories(getSearchQuery(), "stars", "desc", Config.CLIENT_ID, Config.CLIENT_SECRET)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<Repositories, Observable<Repository>>() {
+                    @Override
+                    public Observable<Repository> call(Repositories repositories) {
+                        return Observable.from(repositories.repositories);
+                    }
+                })
+                .flatMap(new Func1<Repository, Observable<List<Contributor>>>() {
+                             @Override
+                             public Observable<List<Contributor>> call(Repository repository) {
+                                 return api.getWebService().contributors(
+                                         repository.owner.name,
+                                         repository.name,
+                                         Config.CLIENT_ID,
+                                         Config.CLIENT_SECRET);
+                             }
+                         }, new Func2<Repository, List<Contributor>, FullRepository>() {
+                             @Override
+                             public FullRepository call(Repository repository, List<Contributor> contributors) {
+                                 return new FullRepository(repository, contributors);
+                             }
+                         }
+                )
+                .subscribe(new Subscriber<FullRepository>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(LOG_TAG, "Data successfully retrieved");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(LOG_TAG, "Failed to retrieve data", e);
+                    }
+
+                    @Override
+                    public void onNext(FullRepository fullRepository) {
+                        mFullRepositories.add(fullRepository);
+                    }
+                });
+    }
+
+    private String getSearchQuery() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -7);
+        return "created:>=" + dateFormat.format(cal.getTime());
     }
 
     @Override
