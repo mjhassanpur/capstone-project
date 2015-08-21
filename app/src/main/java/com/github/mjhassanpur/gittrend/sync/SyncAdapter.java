@@ -178,10 +178,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         if ( cVRepoVector.size() > 0 ) {
             ContentValues[] cvRepoArray = new ContentValues[cVRepoVector.size()];
             cVRepoVector.toArray(cvRepoArray);
-            getContext().getContentResolver().bulkInsert(RepoContract.RepoEntry.CONTENT_URI, cvRepoArray);
-
             // delete old data
-            getContext().getContentResolver().delete(RepoContract.RepoEntry.CONTENT_URI, null, null);
+            final int deleted = getContext().getContentResolver().delete(RepoContract.RepoEntry.CONTENT_URI, null, null);
+            Log.d(LOG_TAG, "deleted " + deleted + " repo rows");
+            // insert new data
+            final int inserted = getContext().getContentResolver().bulkInsert(RepoContract.RepoEntry.CONTENT_URI, cvRepoArray);
+            Log.d(LOG_TAG, "inserted " + inserted + " repo rows");
         }
 
         Vector<ContentValues> cVContributorVector = new Vector<>(fullRepositories.size() * contributorsSize);
@@ -211,11 +213,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         // add to database
         if ( cVContributorVector.size() > 0 ) {
             ContentValues[] cvContributorArray = new ContentValues[cVContributorVector.size()];
-            cVRepoVector.toArray(cvContributorArray);
-            getContext().getContentResolver().bulkInsert(RepoContract.ContributorEntry.CONTENT_URI, cvContributorArray);
-
+            cVContributorVector.toArray(cvContributorArray);
             // delete old data
-            getContext().getContentResolver().delete(RepoContract.ContributorEntry.CONTENT_URI, null, null);
+            final int deleted = getContext().getContentResolver().delete(RepoContract.ContributorEntry.CONTENT_URI, null, null);
+            Log.d(LOG_TAG, "deleted " + deleted + " contributor rows");
+            // insert new data
+            final int inserted = getContext().getContentResolver().bulkInsert(RepoContract.ContributorEntry.CONTENT_URI, cvContributorArray);
+            Log.d(LOG_TAG, "inserted " + inserted + " contributor rows");
         }
     }
 
