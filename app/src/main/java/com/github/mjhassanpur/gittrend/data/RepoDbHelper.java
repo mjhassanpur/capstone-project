@@ -10,7 +10,7 @@ import com.github.mjhassanpur.gittrend.data.RepoContract.ContributorEntry;
 public class RepoDbHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     static final String DATABASE_NAME = "repo.db";
 
@@ -25,7 +25,7 @@ public class RepoDbHelper extends SQLiteOpenHelper {
                 RepoEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 RepoEntry.COLUMN_FULL_NAME + " TEXT NOT NULL, " +
                 RepoEntry.COLUMN_OWNER_NAME + " TEXT NOT NULL, " +
-                RepoEntry.COLUMN_OWNER_AVATAR + " BLOB NOT NULL, " +
+                RepoEntry.COLUMN_OWNER_AVATAR_URL + " TEXT NOT NULL, " +
                 RepoEntry.COLUMN_OWNER_HTML_URL + " TEXT NOT NULL, " +
                 RepoEntry.COLUMN_HTML_URL + " TEXT NOT NULL, " +
                 RepoEntry.COLUMN_DESCRIPTION + " TEXT, " +
@@ -38,7 +38,7 @@ public class RepoDbHelper extends SQLiteOpenHelper {
                 ContributorEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 ContributorEntry.COLUMN_REPO_KEY + " INTEGER NOT NULL, " +
                 ContributorEntry.COLUMN_NAME + " TEXT NOT NULL, " +
-                ContributorEntry.COLUMN_AVATAR + " BLOB NOT NULL, " +
+                ContributorEntry.COLUMN_AVATAR_URL + " TEXT NOT NULL, " +
                 ContributorEntry.COLUMN_HTML_URL + " TEXT NOT NULL, " +
                 ContributorEntry.COLUMN_COMMITS + " INTEGER NOT NULL, " +
                 ContributorEntry.COLUMN_ADDITIONS + " INTEGER NOT NULL, " +

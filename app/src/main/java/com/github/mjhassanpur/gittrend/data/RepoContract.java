@@ -27,7 +27,7 @@ public class RepoContract {
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_FULL_NAME = "full_name";
         public static final String COLUMN_OWNER_NAME = "owner_name";
-        public static final String COLUMN_OWNER_AVATAR = "owner_avatar";
+        public static final String COLUMN_OWNER_AVATAR_URL = "owner_avatar_url";
         public static final String COLUMN_OWNER_HTML_URL = "owner_html_url";
         public static final String COLUMN_HTML_URL = "html_url";
         public static final String COLUMN_DESCRIPTION = "description";
@@ -54,7 +54,7 @@ public class RepoContract {
 
         public static final String COLUMN_REPO_KEY = "repo_id";
         public static final String COLUMN_NAME = "name";
-        public static final String COLUMN_AVATAR = "avatar";
+        public static final String COLUMN_AVATAR_URL = "avatar_url";
         public static final String COLUMN_HTML_URL = "html_url";
         public static final String COLUMN_COMMITS = "commits";
         public static final String COLUMN_ADDITIONS = "additions";

@@ -5,13 +5,38 @@ import android.accounts.AccountManager;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SyncRequest;
 import android.content.SyncResult;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
+import com.github.mjhassanpur.gittrend.Config;
 import com.github.mjhassanpur.gittrend.R;
+import com.github.mjhassanpur.gittrend.api.Contributor;
+import com.github.mjhassanpur.gittrend.api.FullRepository;
+import com.github.mjhassanpur.gittrend.api.GitHubRestApiClient;
+import com.github.mjhassanpur.gittrend.api.Repositories;
+import com.github.mjhassanpur.gittrend.api.Repository;
+import com.github.mjhassanpur.gittrend.api.Week;
+import com.github.mjhassanpur.gittrend.data.RepoContract;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Vector;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 
 /**
  * Handle the transfer of data between a server and an
@@ -22,6 +47,7 @@ import com.github.mjhassanpur.gittrend.R;
  */
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
     // Global variables
+    public final String LOG_TAG = SyncAdapter.class.getSimpleName();
     public static final int SYNC_INTERVAL = 60 * 60 * 24;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL/24;
     // Define a variable to contain a content resolver instance
@@ -68,6 +94,150 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     /*
      * Put the data transfer code here.
      */
+        final List<FullRepository> fullRepositories = new ArrayList<>();
+        final GitHubRestApiClient api = GitHubRestApiClient.getInstance();
+        /**
+         * @see <a href="http://stackoverflow.com/questions/30269011/chain-two-retrofit-observables-w-rxjava"></a>
+         */
+        api.getWebService()
+                .repositories(getSearchQuery(), "stars", "desc", Config.CLIENT_ID, Config.CLIENT_SECRET)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<Repositories, Observable<Repository>>() {
+                    @Override
+                    public Observable<Repository> call(Repositories repositories) {
+                        return Observable.from(repositories.repositories);
+                    }
+                })
+                .flatMap(new Func1<Repository, Observable<List<Contributor>>>() {
+                             @Override
+                             public Observable<List<Contributor>> call(Repository repository) {
+                                 return api.getWebService().contributors(
+                                         repository.owner.name,
+                                         repository.name,
+                                         Config.CLIENT_ID,
+                                         Config.CLIENT_SECRET);
+                             }
+                         }, new Func2<Repository, List<Contributor>, FullRepository>() {
+                             @Override
+                             public FullRepository call(Repository repository, List<Contributor> contributors) {
+                                 return new FullRepository(repository, contributors);
+                             }
+                         }
+                )
+                .subscribe(new Subscriber<FullRepository>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(LOG_TAG, "Data successfully retrieved");
+                        saveToLocal(fullRepositories);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(LOG_TAG, "Failed to retrieve data", e);
+                    }
+
+                    @Override
+                    public void onNext(FullRepository fullRepository) {
+                        fullRepositories.add(fullRepository);
+                    }
+                });
+    }
+
+    private String getSearchQuery() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -7);
+        return "created:>=" + dateFormat.format(cal.getTime());
+    }
+
+    private void saveToLocal(List<FullRepository> fullRepositories) {
+        Vector<ContentValues> cVRepoVector = new Vector<>(fullRepositories.size());
+        int contributorsSize = 0;
+        for (FullRepository fullRepository : fullRepositories) {
+            final Repository repository = fullRepository.repository;
+            contributorsSize += fullRepository.contributors.size();
+
+            ContentValues repoValues = new ContentValues();
+
+            repoValues.put(RepoContract.RepoEntry.COLUMN_NAME, repository.name);
+            repoValues.put(RepoContract.RepoEntry.COLUMN_FULL_NAME, repository.fullName);
+            repoValues.put(RepoContract.RepoEntry.COLUMN_OWNER_NAME, repository.owner.name);
+            repoValues.put(RepoContract.RepoEntry.COLUMN_OWNER_AVATAR_URL, repository.owner.avatarUrl);
+            repoValues.put(RepoContract.RepoEntry.COLUMN_OWNER_HTML_URL, repository.owner.htmlUrl);
+            repoValues.put(RepoContract.RepoEntry.COLUMN_HTML_URL, repository.htmlUrl);
+            repoValues.put(RepoContract.RepoEntry.COLUMN_DESCRIPTION, repository.description);
+            repoValues.put(RepoContract.RepoEntry.COLUMN_STARS, repository.stars);
+            repoValues.put(RepoContract.RepoEntry.COLUMN_LANGUAGE, repository.language);
+            repoValues.put(RepoContract.RepoEntry.COLUMN_FORKS, repository.forks);
+
+            cVRepoVector.add(repoValues);
+        }
+
+        // add to database
+        if ( cVRepoVector.size() > 0 ) {
+            ContentValues[] cvRepoArray = new ContentValues[cVRepoVector.size()];
+            cVRepoVector.toArray(cvRepoArray);
+            getContext().getContentResolver().bulkInsert(RepoContract.RepoEntry.CONTENT_URI, cvRepoArray);
+
+            // delete old data
+            getContext().getContentResolver().delete(RepoContract.RepoEntry.CONTENT_URI, null, null);
+        }
+
+        Vector<ContentValues> cVContributorVector = new Vector<>(fullRepositories.size() * contributorsSize);
+        for (FullRepository fullRepository : fullRepositories) {
+            final Repository repository = fullRepository.repository;
+            long repoId = getRepoId(repository);
+
+            final List<Contributor> contributors = fullRepository.contributors;
+            for (Contributor contributor : contributors) {
+                ContentValues contributorValues = new ContentValues();
+
+                final List<Week> weeks = contributor.weeks;
+                final Week week = weeks.get(weeks.size() - 1);
+
+                contributorValues.put(RepoContract.ContributorEntry.COLUMN_REPO_KEY, repoId);
+                contributorValues.put(RepoContract.ContributorEntry.COLUMN_NAME, contributor.author.name);
+                contributorValues.put(RepoContract.ContributorEntry.COLUMN_AVATAR_URL, contributor.author.avatarUrl);
+                contributorValues.put(RepoContract.ContributorEntry.COLUMN_HTML_URL, contributor.author.htmlUrl);
+                contributorValues.put(RepoContract.ContributorEntry.COLUMN_COMMITS, week.commits);
+                contributorValues.put(RepoContract.ContributorEntry.COLUMN_ADDITIONS, week.additions);
+                contributorValues.put(RepoContract.ContributorEntry.COLUMN_DELETIONS, week.deletions);
+
+                cVContributorVector.add(contributorValues);
+            }
+        }
+
+        // add to database
+        if ( cVContributorVector.size() > 0 ) {
+            ContentValues[] cvContributorArray = new ContentValues[cVContributorVector.size()];
+            cVRepoVector.toArray(cvContributorArray);
+            getContext().getContentResolver().bulkInsert(RepoContract.ContributorEntry.CONTENT_URI, cvContributorArray);
+
+            // delete old data
+            getContext().getContentResolver().delete(RepoContract.ContributorEntry.CONTENT_URI, null, null);
+        }
+    }
+
+    private long getRepoId(Repository repository) {
+        long repoId;
+
+        Cursor repoCursor = getContext().getContentResolver().query(
+                RepoContract.RepoEntry.CONTENT_URI,
+                new String[]{RepoContract.RepoEntry._ID},
+                RepoContract.RepoEntry.COLUMN_FULL_NAME + " = ?",
+                new String[]{repository.fullName},
+                null);
+
+        if (repoCursor.moveToFirst()) {
+            int repoIdIndex = repoCursor.getColumnIndex(RepoContract.RepoEntry._ID);
+            repoId = repoCursor.getLong(repoIdIndex);
+        } else {
+            return -1;
+        }
+
+        repoCursor.close();
+        return repoId;
     }
 
     /**
