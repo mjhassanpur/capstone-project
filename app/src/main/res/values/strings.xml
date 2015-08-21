@@ -7,4 +7,10 @@
 
     <string name="sync_account_type">mjhassanpur.github.com</string>
     <string name="content_authority">com.github.mjhassanpur.gittrend</string>
+
+    <string name="default_repo_name">owner/repo</string>
+    <string name="default_repo_description">The repository description goes here, if available</string>
+    <string name="default_stars_count">0</string>
+    <string name="default_forks_count">0</string>
+    <string name="default_language">Language</string>
 </resources>
