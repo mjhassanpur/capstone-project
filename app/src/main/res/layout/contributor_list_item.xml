@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/list_item_padding"
+    android:gravity="center_vertical">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/card_view_height"
+        card_view:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/contributor_name"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="@dimen/list_item_content_padding"
+                android:text="@string/default_contributor_name"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:ellipsize="end"
+                android:singleLine="true"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="@dimen/list_item_content_padding">
+
+                <TextView
+                    android:id="@+id/commits"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/default_stars_count"
+                    android:textSize="@dimen/abc_text_size_small_material"/>
+
+                <ImageView
+                    android:id="@+id/ic_additions"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_star"/>
+
+                <TextView
+                    android:id="@+id/additions"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/default_stars_count"
+                    android:textSize="@dimen/abc_text_size_small_material"/>
+
+                <ImageView
+                    android:id="@+id/ic_deletions"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_fork"/>
+
+                <TextView
+                    android:id="@+id/deletions"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/default_forks_count"
+                    android:textSize="@dimen/abc_text_size_small_material"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

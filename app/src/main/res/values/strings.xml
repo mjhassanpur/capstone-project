@@ -13,4 +13,5 @@
     <string name="default_stars_count">0</string>
     <string name="default_forks_count">0</string>
     <string name="default_language">Language</string>
+    <string name="default_contributor_name">johndoe99</string>
 </resources>

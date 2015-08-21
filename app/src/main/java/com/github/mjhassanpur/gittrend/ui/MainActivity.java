@@ -122,7 +122,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         @Override
         public void onItemClick(View childView, int position) {
-            startActivity(new Intent(mContext, DetailActivity.class));
+            Cursor cursor = mRecyclerViewAdapter.getCursor();
+            cursor.moveToPosition(position);
+            int repoId = cursor.getInt(COL_REPO_ID);
+            Intent intent = new Intent(mContext, DetailActivity.class);
+            intent.putExtra(DetailActivity.KEY_REPO_ID, repoId);
+            startActivity(intent);
         }
     }
 
