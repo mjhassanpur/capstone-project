@@ -35,7 +35,7 @@
         </activity>
 
         <provider
-            android:name="com.github.mjhassanpur.gittrend.data.StubProvider"
+            android:name=".data.RepoProvider"
             android:authorities="@string/content_authority"
             android:exported="false"
             android:syncable="true"/>
