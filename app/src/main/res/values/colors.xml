@@ -3,4 +3,6 @@
     <color name="primary_color">#424242</color>
     <color name="primary_dark_color">#212121</color>
     <color name="accent_color">#2196F3</color>
+    <color name="additions_color">#4CAF50</color>
+    <color name="deletions_colors">#F44336</color>
 </resources>

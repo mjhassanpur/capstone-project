@@ -42,39 +42,27 @@
                     android:id="@+id/commits"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:text="@string/default_stars_count"
                     android:textSize="@dimen/abc_text_size_small_material"/>
-
-                <ImageView
-                    android:id="@+id/ic_additions"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_star"/>
 
                 <TextView
                     android:id="@+id/additions"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/default_stars_count"
-                    android:textSize="@dimen/abc_text_size_small_material"/>
-
-                <ImageView
-                    android:id="@+id/ic_deletions"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_fork"/>
+                    android:text="@string/default_additions_count"
+                    android:textSize="@dimen/abc_text_size_small_material"
+                    android:textColor="@color/additions_color"/>
 
                 <TextView
                     android:id="@+id/deletions"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/default_forks_count"
-                    android:textSize="@dimen/abc_text_size_small_material"/>
+                    android:text="@string/default_deletions_count"
+                    android:textSize="@dimen/abc_text_size_small_material"
+                    android:textColor="@color/deletions_colors"/>
 
             </LinearLayout>
 

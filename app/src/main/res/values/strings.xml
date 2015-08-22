@@ -14,4 +14,6 @@
     <string name="default_forks_count">0</string>
     <string name="default_language">Language</string>
     <string name="default_contributor_name">johndoe99</string>
+    <string name="default_additions_count">0</string>
+    <string name="default_deletions_count">0</string>
 </resources>

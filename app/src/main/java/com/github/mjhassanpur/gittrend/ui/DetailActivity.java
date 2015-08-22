@@ -195,15 +195,15 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
             String commitStr = String.valueOf(commits);
             if (commits > 1) {
-                commitStr = commitStr.concat(" Commits");
+                commitStr = commitStr.concat(" commits");
             } else {
-                commitStr = commitStr.concat(" Commit");
+                commitStr = commitStr.concat(" commit");
             }
 
             holder.mNameView.setText(name);
             holder.mCommitsView.setText(commitStr);
-            holder.mAdditionsView.setText(String.valueOf(additions));
-            holder.mDeletionsView.setText(String.valueOf(deletions));
+            holder.mAdditionsView.setText("++" + String.valueOf(additions));
+            holder.mDeletionsView.setText("--" + String.valueOf(deletions));
         }
 
         @Override
