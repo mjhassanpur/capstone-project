@@ -24,6 +24,8 @@ import com.github.mjhassanpur.gittrend.R;
 import com.github.mjhassanpur.gittrend.data.RepoContract;
 import com.github.mjhassanpur.gittrend.sync.SyncAdapter;
 import com.github.mjhassanpur.gittrend.ui.misc.RecyclerItemClickListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -66,6 +68,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.recycler_view);
         setupRecyclerView(rv);
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         SyncAdapter.initializeSyncAdapter(this);
         getSupportLoaderManager().initLoader(REPO_LOADER, null, this);

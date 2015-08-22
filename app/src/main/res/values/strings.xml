@@ -16,4 +16,6 @@
     <string name="default_contributor_name">johndoe99</string>
     <string name="default_additions_count">0</string>
     <string name="default_deletions_count">0</string>
+
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>
