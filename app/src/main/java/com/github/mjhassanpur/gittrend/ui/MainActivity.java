@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final String[] REPO_COLUMNS = {
             RepoContract.RepoEntry.TABLE_NAME + "." + RepoContract.RepoEntry._ID,
             RepoContract.RepoEntry.COLUMN_FULL_NAME,
+            RepoContract.RepoEntry.COLUMN_HTML_URL,
             RepoContract.RepoEntry.COLUMN_DESCRIPTION,
             RepoContract.RepoEntry.COLUMN_STARS,
             RepoContract.RepoEntry.COLUMN_FORKS,
@@ -46,10 +47,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private static final int COL_REPO_ID = 0;
     private static final int COL_REPO_FULL_NAME = 1;
-    private static final int COL_REPO_DESCRIPTION = 2;
-    private static final int COL_REPO_STARS= 3;
-    private static final int COL_REPO_FORKS = 4;
-    private static final int COL_REPO_LANGUAGE = 5;
+    private static final int COL_REPO_HTML_URL = 2;
+    private static final int COL_REPO_DESCRIPTION = 3;
+    private static final int COL_REPO_STARS= 4;
+    private static final int COL_REPO_FORKS = 5;
+    private static final int COL_REPO_LANGUAGE = 6;
 
     private RecyclerViewAdapter mRecyclerViewAdapter;
     private Tracker mTracker;
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(getResources().getString(R.string.title_activity_main));
         ViewCompat.setElevation(toolbar, getResources().getDimension(R.dimen.toolbar_elevation));
         setSupportActionBar(toolbar);
 
@@ -139,8 +142,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             Cursor cursor = mRecyclerViewAdapter.getCursor();
             cursor.moveToPosition(position);
             int repoId = cursor.getInt(COL_REPO_ID);
+            String repoUrl = cursor.getString(COL_REPO_HTML_URL);
             Intent intent = new Intent(mContext, DetailActivity.class);
             intent.putExtra(DetailActivity.KEY_REPO_ID, repoId);
+            intent.putExtra(DetailActivity.KEY_REPO_URL, repoUrl);
             startActivity(intent);
         }
     }

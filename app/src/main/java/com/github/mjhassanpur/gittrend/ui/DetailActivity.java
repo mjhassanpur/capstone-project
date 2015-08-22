@@ -5,18 +5,21 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -34,6 +37,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     public final String LOG_TAG = DetailActivity.class.getSimpleName();
     public static final String KEY_REPO_ID = "key_repo_id";
+    public static final String KEY_REPO_URL = "key_repo_url";
 
     private static final int CONTRIBUTOR_LOADER = 1;
 
@@ -56,6 +60,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     private static final int COL_CONTRIBUTOR_DELETIONS = 6;
 
     private int mRepoId = -1;
+    private String mRepoUrl;
     private RecyclerViewAdapter mRecyclerViewAdapter;
     private Tracker mTracker;
 
@@ -85,10 +90,42 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         mAdView.loadAd(adRequest);
 
         if (savedInstanceState == null) {
-            mRepoId = getIntent().getIntExtra(KEY_REPO_ID, -1);
+            Intent intent = getIntent();
+            mRepoId = intent.getIntExtra(KEY_REPO_ID, -1);
+            mRepoUrl = intent.getStringExtra(KEY_REPO_URL);
         }
 
         getSupportLoaderManager().initLoader(CONTRIBUTOR_LOADER, null, this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.action_share);
+        // Get the provider and hold onto it to set/change the share intent.
+        ShareActionProvider shareActionProvider =
+                (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+
+        // Attach an intent to this ShareActionProvider.  You can update this at any time,
+        // like when the user selects a new piece of data they might like to share.
+        if (shareActionProvider != null ) {
+            shareActionProvider.setShareIntent(createShareRepoIntent());
+        } else {
+            Log.d(LOG_TAG, "Share Action Provider is null?");
+        }
+
+        return true;
+    }
+
+    private Intent createShareRepoIntent() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(
+                Intent.EXTRA_TEXT,
+                getResources().getString(R.string.share_message) + mRepoUrl);
+        return shareIntent;
     }
 
     @Override
@@ -101,15 +138,17 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         outState.putInt(KEY_REPO_ID, mRepoId);
+        outState.putString(KEY_REPO_URL, mRepoUrl);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mRepoId = savedInstanceState.getInt(KEY_REPO_ID);
+        mRepoUrl = savedInstanceState.getString(KEY_REPO_URL);
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {

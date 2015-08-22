@@ -6,6 +6,9 @@
     <string name="title_activity_main">Trending Repos</string>
     <string name="title_activity_detail">Contributors</string>
 
+    <string name="action_share">Share</string>
+    <string name="share_message">Hey! Checkout this trending repo on GitHub:\n\n</string>
+
     <string name="sync_account_type">mjhassanpur.github.com</string>
     <string name="content_authority">com.github.mjhassanpur.gittrend</string>
 
