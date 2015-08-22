@@ -17,7 +17,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -73,7 +72,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(false);
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.recycler_view);
         setupRecyclerView(rv);
@@ -91,12 +89,6 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         }
 
         getSupportLoaderManager().initLoader(CONTRIBUTOR_LOADER, null, this);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_detail, menu);
-        return true;
     }
 
     @Override

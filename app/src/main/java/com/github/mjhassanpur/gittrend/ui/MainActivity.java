@@ -15,7 +15,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -66,12 +65,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         assert getSupportActionBar() != null;
         final ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(false);
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.recycler_view);
         setupRecyclerView(rv);
+
+        SyncAdapter.initializeSyncAdapter(this);
 
         // Obtain the shared Tracker instance.
         GTApplication application = (GTApplication) getApplication();
@@ -81,14 +79,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        SyncAdapter.initializeSyncAdapter(this);
         getSupportLoaderManager().initLoader(REPO_LOADER, null, this);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
     }
 
     @Override

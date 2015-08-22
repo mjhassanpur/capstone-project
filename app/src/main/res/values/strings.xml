@@ -3,7 +3,8 @@
     <string name="app_name">Gittrend</string>
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_main">Trending Repos</string>
+    <string name="title_activity_detail">Contributors</string>
 
     <string name="sync_account_type">mjhassanpur.github.com</string>
     <string name="content_authority">com.github.mjhassanpur.gittrend</string>
