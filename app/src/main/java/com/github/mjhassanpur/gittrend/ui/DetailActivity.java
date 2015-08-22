@@ -22,11 +22,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.github.mjhassanpur.gittrend.GTApplication;
 import com.github.mjhassanpur.gittrend.R;
 import com.github.mjhassanpur.gittrend.data.RepoContract;
 import com.github.mjhassanpur.gittrend.ui.misc.RecyclerItemClickListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -55,6 +58,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     private int mRepoId = -1;
     private RecyclerViewAdapter mRecyclerViewAdapter;
+    private Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +78,10 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         RecyclerView rv = (RecyclerView) findViewById(R.id.recycler_view);
         setupRecyclerView(rv);
 
+        // Obtain the shared Tracker instance.
+        GTApplication application = (GTApplication) getApplication();
+        mTracker = application.getDefaultTracker();
+
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
@@ -89,6 +97,15 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_detail, menu);
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String name = DetailActivity.class.getSimpleName();
+        Log.i(LOG_TAG, "Screen name: " + name);
+        mTracker.setScreenName(name);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override

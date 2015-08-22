@@ -20,12 +20,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.github.mjhassanpur.gittrend.GTApplication;
 import com.github.mjhassanpur.gittrend.R;
 import com.github.mjhassanpur.gittrend.data.RepoContract;
 import com.github.mjhassanpur.gittrend.sync.SyncAdapter;
 import com.github.mjhassanpur.gittrend.ui.misc.RecyclerItemClickListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final int COL_REPO_LANGUAGE = 5;
 
     private RecyclerViewAdapter mRecyclerViewAdapter;
+    private Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +73,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         RecyclerView rv = (RecyclerView) findViewById(R.id.recycler_view);
         setupRecyclerView(rv);
 
+        // Obtain the shared Tracker instance.
+        GTApplication application = (GTApplication) getApplication();
+        mTracker = application.getDefaultTracker();
+
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
@@ -81,6 +89,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String name = MainActivity.class.getSimpleName();
+        Log.i(LOG_TAG, "Screen name: " + name);
+        mTracker.setScreenName(name);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
