@@ -1,5 +1,6 @@
 package com.github.mjhassanpur.gittrend.ui;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private RecyclerViewAdapter mRecyclerViewAdapter;
     private Tracker mTracker;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mAdView.loadAd(adRequest);
 
         getSupportLoaderManager().initLoader(REPO_LOADER, null, this);
+
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setMessage("Loading...please make sure you have a network connection");
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.show();
     }
 
     @Override
@@ -114,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data != null && data.getCount() > 0) {
             Log.d(LOG_TAG, "Has data");
+            mProgressDialog.dismiss();
             mRecyclerViewAdapter.swapCursor(data);
         } else {
             Log.d(LOG_TAG, "Has no data");
