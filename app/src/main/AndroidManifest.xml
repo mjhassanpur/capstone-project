@@ -52,6 +52,22 @@
             android:exported="false"
             android:syncable="true"/>
 
+        <receiver
+            android:name=".widget.RepoWidgetProvider"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.github.mjhassanpur.gittrend.ACTION_DATA_UPDATED" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
+
+        <service
+            android:name=".widget.RepoRemoteViewsService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
         <service
             android:name="com.github.mjhassanpur.gittrend.sync.AuthenticatorService">
             <intent-filter>

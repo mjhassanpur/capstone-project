@@ -9,4 +9,10 @@
     <dimen name="list_item_content_padding">4dp</dimen>
     <dimen name="repo_card_view_height">124dp</dimen>
     <dimen name="contributor_card_view_height">78dp</dimen>
+
+    <dimen name="widget_repo_default_width">250dp</dimen>
+    <dimen name="widget_repo_default_height">180dp</dimen>
+    <dimen name="widget_repo_min_resize_width">220dp</dimen>
+    <dimen name="widget_repo_min_resize_height">@dimen/widget_repo_default_height</dimen>
+    <dimen name="widget_margin">0dp</dimen>
 </resources>

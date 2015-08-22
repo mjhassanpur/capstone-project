@@ -7,6 +7,7 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SyncRequest;
 import android.content.SyncResult;
 import android.database.Cursor;
@@ -48,8 +49,10 @@ import rx.schedulers.Schedulers;
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
     // Global variables
     public final String LOG_TAG = SyncAdapter.class.getSimpleName();
-    public static final int SYNC_INTERVAL = 60 * 60 * 24;
-    public static final int SYNC_FLEXTIME = SYNC_INTERVAL/24;
+    public static final String ACTION_DATA_UPDATED =
+            "com.github.mjhassanpur.gittrend.ACTION_DATA_UPDATED";
+    public static final int SYNC_INTERVAL = 60 * 60 * 6;
+    public static final int SYNC_FLEXTIME = SYNC_INTERVAL/6;
     // Define a variable to contain a content resolver instance
     ContentResolver mContentResolver;
     /**
@@ -135,6 +138,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     @Override
                     public void onError(Throwable e) {
                         Log.e(LOG_TAG, "Failed to retrieve data", e);
+                        e.printStackTrace();
                     }
 
                     @Override
@@ -184,29 +188,33 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             // insert new data
             final int inserted = getContext().getContentResolver().bulkInsert(RepoContract.RepoEntry.CONTENT_URI, cvRepoArray);
             Log.d(LOG_TAG, "inserted " + inserted + " repo rows");
+
+            updateWidget();
         }
 
-        Vector<ContentValues> cVContributorVector = new Vector<>(fullRepositories.size() * contributorsSize);
+        Vector<ContentValues> cVContributorVector = new Vector<>(contributorsSize);
         for (FullRepository fullRepository : fullRepositories) {
             final Repository repository = fullRepository.repository;
             long repoId = getRepoId(repository);
 
             final List<Contributor> contributors = fullRepository.contributors;
             for (Contributor contributor : contributors) {
-                ContentValues contributorValues = new ContentValues();
+                if (contributor != null && contributor.author != null) {
+                    ContentValues contributorValues = new ContentValues();
 
-                final List<Week> weeks = contributor.weeks;
-                final Week week = weeks.get(weeks.size() - 1);
+                    final List<Week> weeks = contributor.weeks;
+                    final Week week = weeks.get(weeks.size() - 1);
 
-                contributorValues.put(RepoContract.ContributorEntry.COLUMN_REPO_KEY, repoId);
-                contributorValues.put(RepoContract.ContributorEntry.COLUMN_NAME, contributor.author.name);
-                contributorValues.put(RepoContract.ContributorEntry.COLUMN_AVATAR_URL, contributor.author.avatarUrl);
-                contributorValues.put(RepoContract.ContributorEntry.COLUMN_HTML_URL, contributor.author.htmlUrl);
-                contributorValues.put(RepoContract.ContributorEntry.COLUMN_COMMITS, week.commits);
-                contributorValues.put(RepoContract.ContributorEntry.COLUMN_ADDITIONS, week.additions);
-                contributorValues.put(RepoContract.ContributorEntry.COLUMN_DELETIONS, week.deletions);
+                    contributorValues.put(RepoContract.ContributorEntry.COLUMN_REPO_KEY, repoId);
+                    contributorValues.put(RepoContract.ContributorEntry.COLUMN_NAME, contributor.author.name);
+                    contributorValues.put(RepoContract.ContributorEntry.COLUMN_AVATAR_URL, contributor.author.avatarUrl);
+                    contributorValues.put(RepoContract.ContributorEntry.COLUMN_HTML_URL, contributor.author.htmlUrl);
+                    contributorValues.put(RepoContract.ContributorEntry.COLUMN_COMMITS, week.commits);
+                    contributorValues.put(RepoContract.ContributorEntry.COLUMN_ADDITIONS, week.additions);
+                    contributorValues.put(RepoContract.ContributorEntry.COLUMN_DELETIONS, week.deletions);
 
-                cVContributorVector.add(contributorValues);
+                    cVContributorVector.add(contributorValues);
+                }
             }
         }
 
@@ -221,6 +229,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             final int inserted = getContext().getContentResolver().bulkInsert(RepoContract.ContributorEntry.CONTENT_URI, cvContributorArray);
             Log.d(LOG_TAG, "inserted " + inserted + " contributor rows");
         }
+    }
+
+    private void updateWidget() {
+        Context context = getContext();
+        // Setting the package ensures that only components in our app will receive the broadcast
+        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
+                .setPackage(context.getPackageName());
+        context.sendBroadcast(dataUpdatedIntent);
     }
 
     private long getRepoId(Repository repository) {
