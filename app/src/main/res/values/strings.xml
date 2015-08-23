@@ -22,5 +22,17 @@
     <string name="default_additions_count">0</string>
     <string name="default_deletions_count">0</string>
 
+    <string name="contributor_name_descr">The contributor's name</string>
+    <string name="commits_descr">The number of commits in the past week</string>
+    <string name="additions_descr">The number of additions in the past week</string>
+    <string name="deletions_descr">The number of deletions in the past week</string>
+    <string name="repo_name_descr">The repo's full name</string>
+    <string name="repo_description_descr">The repo's description</string>
+    <string name="ic_star_descr">The star icon</string>
+    <string name="stars_descr">The number of stars the repo has</string>
+    <string name="ic_fork_descr">The fork icon</string>
+    <string name="forks_descr">The number of forks the repo has</string>
+    <string name="language_descr">The repo's main programming language</string>
+
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>

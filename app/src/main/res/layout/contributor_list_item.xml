@@ -29,7 +29,8 @@
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:ellipsize="end"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:contentDescription="@string/contributor_name_descr"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -42,7 +43,8 @@
                     android:layout_height="match_parent"
                     android:padding="@dimen/list_item_content_padding"
                     android:text="@string/default_stars_count"
-                    android:textSize="@dimen/abc_text_size_small_material"/>
+                    android:textSize="@dimen/abc_text_size_small_material"
+                    android:contentDescription="@string/commits_descr"/>
 
                 <TextView
                     android:id="@+id/additions"
@@ -53,7 +55,8 @@
                     android:padding="@dimen/list_item_content_padding"
                     android:text="@string/default_additions_count"
                     android:textSize="@dimen/abc_text_size_small_material"
-                    android:textColor="@color/additions_color"/>
+                    android:textColor="@color/additions_color"
+                    android:contentDescription="@string/additions_descr"/>
 
                 <TextView
                     android:id="@+id/deletions"
@@ -64,7 +67,8 @@
                     android:padding="@dimen/list_item_content_padding"
                     android:text="@string/default_deletions_count"
                     android:textSize="@dimen/abc_text_size_small_material"
-                    android:textColor="@color/deletions_colors"/>
+                    android:textColor="@color/deletions_colors"
+                    android:contentDescription="@string/deletions_descr"/>
 
             </RelativeLayout>
 

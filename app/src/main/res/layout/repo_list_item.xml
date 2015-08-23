@@ -30,7 +30,8 @@
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:ellipsize="end"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:contentDescription="@string/repo_name_descr"/>
 
             <TextView
                 android:id="@+id/repo_description"
@@ -40,7 +41,8 @@
                 android:text="@string/default_repo_description"
                 android:textSize="@dimen/abc_text_size_small_material"
                 android:ellipsize="end"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:contentDescription="@string/repo_description_descr"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -53,7 +55,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_star"/>
+                    android:src="@drawable/ic_star"
+                    android:contentDescription="@string/ic_star_descr"/>
 
                 <TextView
                     android:id="@+id/stars"
@@ -61,14 +64,16 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="@string/default_stars_count"
-                    android:textSize="@dimen/abc_text_size_small_material"/>
+                    android:textSize="@dimen/abc_text_size_small_material"
+                    android:contentDescription="@string/stars_descr"/>
 
                 <ImageView
                     android:id="@+id/ic_fork"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_fork"/>
+                    android:src="@drawable/ic_fork"
+                    android:contentDescription="@string/ic_fork_descr"/>
 
                 <TextView
                     android:id="@+id/forks"
@@ -76,7 +81,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="@string/default_forks_count"
-                    android:textSize="@dimen/abc_text_size_small_material"/>
+                    android:textSize="@dimen/abc_text_size_small_material"
+                    android:contentDescription="@string/forks_descr"/>
 
                 <TextView
                     android:id="@+id/language"
@@ -84,7 +90,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:text="@string/default_language"
-                    android:textSize="@dimen/abc_text_size_small_material"/>
+                    android:textSize="@dimen/abc_text_size_small_material"
+                    android:contentDescription="@string/language_descr"/>
 
             </LinearLayout>
 
