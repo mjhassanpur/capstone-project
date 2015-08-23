@@ -7,81 +7,80 @@
     android:padding="@dimen/list_item_padding"
     android:gravity="center_vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/repo_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/list_item_content_padding"
+            android:text="@string/default_repo_name"
+            android:textSize="@dimen/abc_text_size_medium_material"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:ellipsize="end"
+            android:singleLine="true"/>
+
+        <TextView
+            android:id="@+id/repo_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/list_item_content_padding"
+            android:text="@string/default_repo_description"
+            android:textSize="@dimen/abc_text_size_small_material"
+            android:ellipsize="end"
+            android:singleLine="true"/>
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="@dimen/list_item_content_padding">
+
+            <ImageView
+                android:id="@+id/ic_star"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_star"/>
 
             <TextView
-                android:id="@+id/repo_name"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:id="@+id/stars"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:padding="@dimen/list_item_content_padding"
-                android:text="@string/default_repo_name"
-                android:textSize="@dimen/abc_text_size_medium_material"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:ellipsize="end"
-                android:singleLine="true"/>
+                android:text="@string/default_stars_count"
+                android:textSize="@dimen/abc_text_size_small_material"/>
+
+            <ImageView
+                android:id="@+id/ic_fork"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_fork"/>
 
             <TextView
-                android:id="@+id/repo_description"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:id="@+id/forks"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:padding="@dimen/list_item_content_padding"
-                android:text="@string/default_repo_description"
-                android:textSize="@dimen/abc_text_size_small_material"
-                android:ellipsize="end"
-                android:singleLine="true"/>
+                android:text="@string/default_forks_count"
+                android:textSize="@dimen/abc_text_size_small_material"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:padding="@dimen/list_item_content_padding">
-
-                <ImageView
-                    android:id="@+id/ic_star"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_star"/>
-
-                <TextView
-                    android:id="@+id/stars"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/default_stars_count"
-                    android:textSize="@dimen/abc_text_size_small_material"/>
-
-                <ImageView
-                    android:id="@+id/ic_fork"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_fork"/>
-
-                <TextView
-                    android:id="@+id/forks"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/default_forks_count"
-                    android:textSize="@dimen/abc_text_size_small_material"/>
-
-                <TextView
-                    android:id="@+id/language"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:text="@string/default_language"
-                    android:textSize="@dimen/abc_text_size_small_material"/>
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/language"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:text="@string/default_language"
+                android:textSize="@dimen/abc_text_size_small_material"/>
 
         </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -14,16 +14,15 @@
         android:layout_height="@dimen/contributor_card_view_height"
         card_view:cardUseCompatPadding="true">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_gravity="start">
 
             <TextView
                 android:id="@+id/contributor_name"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:padding="@dimen/list_item_content_padding"
                 android:text="@string/default_contributor_name"
                 android:textSize="@dimen/abc_text_size_medium_material"
@@ -32,41 +31,44 @@
                 android:ellipsize="end"
                 android:singleLine="true"/>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:padding="@dimen/list_item_content_padding">
+                android:layout_height="wrap_content"
+                android:layout_below="@id/contributor_name">
 
                 <TextView
                     android:id="@+id/commits"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="2"
+                    android:padding="@dimen/list_item_content_padding"
                     android:text="@string/default_stars_count"
                     android:textSize="@dimen/abc_text_size_small_material"/>
 
                 <TextView
                     android:id="@+id/additions"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_toRightOf="@+id/commits"
+                    android:layout_toEndOf="@+id/commits"
+                    android:padding="@dimen/list_item_content_padding"
                     android:text="@string/default_additions_count"
                     android:textSize="@dimen/abc_text_size_small_material"
                     android:textColor="@color/additions_color"/>
 
                 <TextView
                     android:id="@+id/deletions"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_toRightOf="@+id/additions"
+                    android:layout_toEndOf="@+id/additions"
+                    android:padding="@dimen/list_item_content_padding"
                     android:text="@string/default_deletions_count"
                     android:textSize="@dimen/abc_text_size_small_material"
                     android:textColor="@color/deletions_colors"/>
 
-            </LinearLayout>
+            </RelativeLayout>
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </android.support.v7.widget.CardView>
 
