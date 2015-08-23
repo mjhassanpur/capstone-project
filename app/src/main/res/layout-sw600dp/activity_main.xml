@@ -5,27 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
         android:background="@color/primary_color"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"/>
-
-    <FrameLayout
-        android:id="@+id/v_toolbar_extension"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:layout_below="@+id/toolbar"
-        android:background="?attr/colorPrimary"/>
+        android:layout_height="@dimen/appbar_height">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:background="@color/primary_color"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"/>
+
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"/>
+        android:layout_marginTop="?attr/actionBarSize"/>
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
