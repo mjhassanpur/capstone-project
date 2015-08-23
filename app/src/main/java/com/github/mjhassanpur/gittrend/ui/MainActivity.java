@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -129,6 +130,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
+    private MainActivity getSelf() {
+        return this;
+    }
+
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mRecyclerViewAdapter.swapCursor(null);
@@ -146,12 +151,28 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         public void onItemClick(View childView, int position) {
             Cursor cursor = mRecyclerViewAdapter.getCursor();
             cursor.moveToPosition(position);
+
             int repoId = cursor.getInt(COL_REPO_ID);
             String repoUrl = cursor.getString(COL_REPO_HTML_URL);
+            String repoFullName = cursor.getString(COL_REPO_FULL_NAME);
+            String repoDescription = cursor.getString(COL_REPO_DESCRIPTION);
+            int repoStars = cursor.getInt(COL_REPO_STARS);
+            int repoForks = cursor.getInt(COL_REPO_FORKS);
+            String repoLanguage = cursor.getString(COL_REPO_LANGUAGE);
+
             Intent intent = new Intent(mContext, DetailActivity.class);
             intent.putExtra(DetailActivity.KEY_REPO_ID, repoId);
             intent.putExtra(DetailActivity.KEY_REPO_URL, repoUrl);
-            startActivity(intent);
+            intent.putExtra(DetailActivity.KEY_REPO_FULL_NAME, repoFullName);
+            intent.putExtra(DetailActivity.KEY_REPO_DESCRIPTION, repoDescription);
+            intent.putExtra(DetailActivity.KEY_REPO_STARS, repoStars);
+            intent.putExtra(DetailActivity.KEY_REPO_FORKS, repoForks);
+            intent.putExtra(DetailActivity.KEY_REPO_LANGUAGE, repoLanguage);
+
+            ViewCompat.setTransitionName(childView, DetailActivity.REPO_TRANSITION);
+            ActivityOptionsCompat options = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(getSelf(), childView, DetailActivity.REPO_TRANSITION);
+            startActivity(intent, options.toBundle());
         }
     }
 

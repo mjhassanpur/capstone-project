@@ -37,8 +37,16 @@ import com.google.android.gms.analytics.Tracker;
 public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public final String LOG_TAG = DetailActivity.class.getSimpleName();
+
+    public static final String REPO_TRANSITION = "repo_transition";
+
     public static final String KEY_REPO_ID = "key_repo_id";
     public static final String KEY_REPO_URL = "key_repo_url";
+    public static final String KEY_REPO_FULL_NAME = "key_repo_full_name";
+    public static final String KEY_REPO_DESCRIPTION = "key_repo_description";
+    public static final String KEY_REPO_STARS = "key_repo_stars";
+    public static final String KEY_REPO_FORKS = "key_repo_forks";
+    public static final String KEY_REPO_LANGUAGE = "key_repo_language";
 
     private static final int CONTRIBUTOR_LOADER = 1;
 
@@ -62,6 +70,13 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     private int mRepoId = -1;
     private String mRepoUrl;
+    private String mRepoFullName;
+    private String mRepoDescription;
+    private int mRepoStars = -1;
+    private int mRepoForks = -1;
+    private String mRepoLanguage;
+
+
     private RecyclerViewAdapter mRecyclerViewAdapter;
     private Tracker mTracker;
 
@@ -94,6 +109,12 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             Intent intent = getIntent();
             mRepoId = intent.getIntExtra(KEY_REPO_ID, -1);
             mRepoUrl = intent.getStringExtra(KEY_REPO_URL);
+            mRepoFullName = intent.getStringExtra(KEY_REPO_FULL_NAME);
+            mRepoDescription = intent.getStringExtra(KEY_REPO_DESCRIPTION);
+            mRepoStars = intent.getIntExtra(KEY_REPO_STARS, -1);
+            mRepoForks = intent.getIntExtra(KEY_REPO_FORKS, -1);
+            mRepoLanguage = intent.getStringExtra(KEY_REPO_LANGUAGE);
+            updateRepoView();
         }
 
         getSupportLoaderManager().initLoader(CONTRIBUTOR_LOADER, null, this);
@@ -143,6 +164,11 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_REPO_ID, mRepoId);
         outState.putString(KEY_REPO_URL, mRepoUrl);
+        outState.putString(KEY_REPO_FULL_NAME, mRepoFullName);
+        outState.putString(KEY_REPO_DESCRIPTION, mRepoDescription);
+        outState.putInt(KEY_REPO_STARS, mRepoStars);
+        outState.putInt(KEY_REPO_FORKS, mRepoForks);
+        outState.putString(KEY_REPO_LANGUAGE, mRepoLanguage);
     }
 
     @Override
@@ -150,6 +176,12 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         super.onRestoreInstanceState(savedInstanceState);
         mRepoId = savedInstanceState.getInt(KEY_REPO_ID);
         mRepoUrl = savedInstanceState.getString(KEY_REPO_URL);
+        mRepoFullName = savedInstanceState.getString(KEY_REPO_FULL_NAME);
+        mRepoDescription = savedInstanceState.getString(KEY_REPO_DESCRIPTION);
+        mRepoStars = savedInstanceState.getInt(KEY_REPO_STARS);
+        mRepoForks = savedInstanceState.getInt(KEY_REPO_FORKS);
+        mRepoLanguage = savedInstanceState.getString(KEY_REPO_LANGUAGE);
+        updateRepoView();
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
@@ -162,6 +194,24 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         recyclerView.setAdapter(mRecyclerViewAdapter);
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(this, new OnItemClickListener(this)));
+    }
+
+    private void updateRepoView() {
+        View view = findViewById(R.id.repo_view);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(mRepoUrl));
+                startActivity(intent);
+            }
+        });
+        ViewCompat.setTransitionName(view, REPO_TRANSITION);
+        ((TextView) view.findViewById(R.id.repo_name)).setText(mRepoFullName);
+        ((TextView) view.findViewById(R.id.repo_description)).setText(mRepoDescription);
+        ((TextView) view.findViewById(R.id.stars)).setText(String.valueOf(mRepoStars));
+        ((TextView) view.findViewById(R.id.forks)).setText(String.valueOf(mRepoForks));
+        ((TextView) view.findViewById(R.id.language)).setText(mRepoLanguage);
     }
 
     @Override
